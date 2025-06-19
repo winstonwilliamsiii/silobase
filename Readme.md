@@ -1,4 +1,5 @@
 # 📊 DataPlane
+![image](https://github.com/user-attachments/assets/b28a0cd5-21db-454d-a03e-c9bbf01d3748)
 
 **DataPlane** is an open-source, lightweight backend-as-a-service (BaaS) that lets you instantly expose any SQL database (like PostgreSQL, MySQL, SQLite) over a REST API. Just connect your database, and you're ready to go—no backend code required.
 
