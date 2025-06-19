@@ -1,14 +1,9 @@
+### ✅ CONTRIBUTING.md
 
----
-
-### ✅ `CONTRIBUTING.md`
-
-```markdown
 # 🤝 Contributing to DataPlane
 
 Thanks for your interest in contributing to **DataPlane**! We're excited to have your help improving this open-source project.
 
----
 
 ## 📦 How to Contribute
 
