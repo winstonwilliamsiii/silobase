@@ -1,5 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { GenericResponse } from '../types/responseType'
+import { buildFiltersToRaw } from '../utils/buildQueryFilters'
+import knex from 'knex'
 
 export const createRecord = async (
   app: FastifyInstance,
@@ -20,6 +22,34 @@ export const createRecord = async (
       status: 'error',
       code: 400,
       error: error.message || 'An error occurred while creating the record',
+    }
+  }
+}
+
+export const readRecords = async (
+  app: FastifyInstance,
+  table: string,
+  query: Record<string, string>
+): Promise<GenericResponse<any | null>> => {
+  try{
+    const { rawSql, bindings } = buildFiltersToRaw(table, query)
+    const result = await app.db.raw(rawSql, bindings)
+    let dataResult = {
+      count : result.rowCount || result.rows.length,
+      rows: result.rows || result[0],
+    }
+    return {
+      status: 'success',
+      data: dataResult,
+      code: 200,
+    }
+
+  }catch(error: any) {
+    app.log.error(error)
+    return {
+      status: 'error',
+      code: 400,
+      error: error.message || 'An error occurred while reading records',
     }
   }
 }
