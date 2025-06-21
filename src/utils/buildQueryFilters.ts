@@ -1,8 +1,5 @@
 type QueryInput = Record<string, string | string[]>;
 
-/// Example URL:
-/// /users?age=gte.18&status=in.active,verified&join=profiles:on=users.id=profiles.user_id&join=students:on=users.id=students.user_id&group_by=users.name&limit=10&offset=20&having.score=gt.80
-
 export const buildFiltersToRaw = (
   table: string,
   query: QueryInput

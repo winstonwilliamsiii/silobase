@@ -53,3 +53,67 @@ export const readRecords = async (
     }
   }
 }
+
+export const updateRecord = async (
+  app: FastifyInstance,
+  table: string,
+  id: string,
+  data: any
+): Promise<GenericResponse<any | null>> => {
+  try {
+    const result = await app.db(table).where({ id }).update(data).returning('*')
+
+    if (result.length === 0) {
+      return {
+        status: 'error',
+        code: 400,
+        error: 'Record not found',
+      }
+    }
+
+    return {
+      status: 'success',
+      data: result,
+      code: 200,
+    }
+  } catch (error: any) {
+    app.log.error(error)
+    return {
+      status: 'error',
+      code: 400,
+      error: error.message || 'An error occurred while updating the record',
+    }
+  }
+}
+
+
+export const deleteRecord = async (
+  app: FastifyInstance,
+  table: string,
+  id: string
+): Promise<GenericResponse<any | null>> => {
+  try {
+    const result = await app.db(table).where({ id }).del().returning('*')
+
+    if (result.length === 0) {
+      return {
+        status: 'error',
+        code: 400,
+        error: 'Record not found',
+      }
+    }
+
+    return {
+      status: 'success',
+      data: null,
+      code: 200,
+    }
+  } catch (error: any) {
+    app.log.error(error)
+    return {
+      status: 'error',
+      code: 400,
+      error: error.message || 'An error occurred while updating the record',
+    }
+  }
+}
