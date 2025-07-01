@@ -1,7 +1,7 @@
-# 📊 DataPlane
+# 📊 Silobase
 ![image](https://github.com/user-attachments/assets/b28a0cd5-21db-454d-a03e-c9bbf01d3748)
 
-**DataPlane** is an open-source, lightweight backend-as-a-service (BaaS) that lets you instantly expose any SQL database (like PostgreSQL, MySQL, SQLite) over a REST API. Just connect your database, and you're ready to go—no backend code required.
+**Silobase** is an open-source, lightweight backend-as-a-service (BaaS) that lets you instantly expose any SQL database (like PostgreSQL, MySQL, SQLite) over a REST API. Just connect your database, and you're ready to go—no backend code required.
 
 Built with [Fastify](https://www.fastify.io/) and [Knex.js](https://knexjs.org/) in TypeScript.
 
@@ -22,8 +22,8 @@ Built with [Fastify](https://www.fastify.io/) and [Knex.js](https://knexjs.org/)
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourusername/dataplane.git
-cd dataplane
+git clone https://github.com/yourusername/Silobase.git
+cd Silobase
 npm install
 ```
 
