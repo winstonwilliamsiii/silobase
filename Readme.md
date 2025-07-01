@@ -1,119 +1,115 @@
-# 📊 Silobase
+# Silobase
 
-**Silobase** is an open-source, lightweight backend-as-a-service (BaaS) that lets you instantly expose any SQL database (like PostgreSQL, MySQL, SQLite) over a REST API. Just connect your database, and you're ready to go—no backend code required.
+Silobase is an open-source backend service that instantly turns your own database and infrastructure into a secure, production-ready REST API — without writing any backend code.
 
-Built with [Fastify](https://www.fastify.io/) and [Knex.js](https://knexjs.org/) in TypeScript.
+Bring your own PostgreSQL database (others coming soon), plug in your `.env` configuration, and Silobase takes care of the rest.
 
----
 
 ## 🚀 Features
 
-- 🔄 Auto-generated CRUD endpoints for any table
-- 🧩 Supports PostgreSQL, MySQL, SQLite (via Knex)
-- 🔐 API Key security (read-only, write-only, full-access)
-- 🔎 Query filters and joins
-- ⚡ Fastify + TypeScript for performance and type safety
+- 🔌 Plug-and-play API for your existing database
+- 🔐 API key-based permission control (read/write/full)
+- ⚡️ Instant REST endpoints per table
+- 🧩 Join support with filtering and query operators
+- 🧱 Built with Fastify + Knex for performance and flexibility
+- 📦 Coming soon: File storage, email integration, and support for MySQL, SQLite, MSSQL
 
----
 
-## 🧪 Quick Start
+## 📦 Quickstart
 
-### 1. Clone & Install
+1. **Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/Silobase.git
-cd Silobase
+git clone https://github.com/silobase/silobase.git
+cd silobase
 npm install
-```
+````
 
-### 2. Configure
-Create a .env file:
+2. **Set up your `.env`**
 
-```bash
+```env
 PORT=3000
-DB_CLIENT=pg 
-DATABASE_URL=<database_url>
+DB_CLIENT=pg
+DATABASE_URL=postgres://username:password@localhost:5432/yourdb
 
 API_KEY_READ=your-read-key
 API_KEY_WRITE=your-write-key
 API_KEY_FULL=your-full-key
 ```
 
-### 3. Run the server
+3. **Run the server**
+
 ```bash
 npm run build && npm start
 ```
 
-## REST Endpoints 
-| Method |  Url  | Description 
-|--------|-------|------------
-| POST   | rest/v1/:table| Create record
-| GET    | rest/v1/:table | Get Record 
-| UPDATE | rest/v1/:table/{id} | Update a Record
-| DELETE | rest/v1/:table/{id} | Delete a Record 
-
-All requests must include the correct API key in the x-api-key header.
-
-## 🔐 API Key Permissions
-|Key Type |	Permissions
-|-------- | ----------
-|read	  | GET only
-|write	  | POST, PATCH, DELETE
-|full	  | All operations
-
-## Sample CURL Scripts 
-POST  rest/v1/:table| Create record
-curl --location '<BASE_URL>/rest/v1/users' \
---header 'x-api-key: <API_WRITE_KEY>' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "name": "",
-    "email": "", 
-    "role":""
-}'
+Your API is now live at `http://localhost:3000`.
 
 
-GET  - rest/v1/:table -  Get Record 
-curl --location --request GET '<BASE_URL>/rest/v1/users?join=students%3Aon%3Dusers.id%3Dstudents.user_id&join=enrollments%3Aon%3Dstudents.id%3Denrollments.student_id&role=eq.admin' \
---header 'x-api-key: <API_READ_KEY>' \
---header 'Content-Type: application/json' \
---data-raw ''
+## 📘 Example Request
 
+**POST** `/rest/v1/users`
 
-UPDATE - rest/v1/:table/{id} - Update a Record
-curl --location --request PUT '<BASE_URL>/rest/v1/enrollments/1' \
---header 'x-api-key: <API_READ_KEY> \
---header 'Content-Type: application/json' \
---data '{
-    "grade":""
-}'
-
-DELETE - rest/v1/:table/{id} - Delete a Record 
-curl --location --request DELETE <BASE_URL>/rest/v1/users/6' \
---header 'x-api-key: ae2b6452-1922-4b76-90c1-25be77b278e6' \
---data ''
-
-
-
-
-## 🧩 Folder Structure
 ```bash
-dbplane/
-├── src/
-│   ├── plugins/        # DB, Swagger, CORS, API Key Guard
-│   ├── routes/         # CRUD routes
-│   ├── services/       # CRUD logic
-│   ├── utils/          # Query builder, filters
-│   ├── config/         # Environment config
-│   └── app.ts          # Fastify instance
-├── tests/
-├── .env
-├── server.ts
-├── package.json
-├── README.md
-└── CONTRIBUTING.md
+curl --location 'http://localhost:3000/rest/v1/users' \
+  --header 'x-api-key: <API_KEY_WRITE>' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "role": "admin"
+  }'
 ```
 
+> Ensure the `users` table exists in your connected database.
 
-## 🤝 Contributing
-We welcome PRs and suggestions! See CONTRIBUTING.md to get started.
+## 📚 Documentation
+
+Full docs are available at the silobase docs website
+
+
+## 🔐 API Key Permissions
+
+| Key Type | Permissions         |
+| -------- | ------------------- |
+| `read`   | GET only            |
+| `write`  | POST, PATCH, DELETE |
+| `full`   | All operations      |
+
+
+## 🛠️ Project Structure
+
+```
+silobase/
+├── .env.example           # Example config
+├── server.ts              # Entry point
+├── src/
+│   ├── app.ts             # App bootstrap
+│   ├── config/            # Env loaders
+│   ├── auth/              # Auth + DB plugins
+│   ├── routes/            # REST route handlers
+│   ├── service/           # Business logic
+│   ├── types/             # Type definitions
+│   └── utils/             # Query parsing helpers
+```
+
+## 🧪 Roadmap
+
+* [x] PostgreSQL support
+* [ ] MySQL, MSSQL, SQLite
+* [ ] File storage (S3, Azure Blob)
+* [ ] Email provider support
+* [ ] GraphQL layer (future)
+
+---
+
+## 🧑‍💻 Contributing
+
+Pull requests are welcome! Please open an issue first if you'd like to suggest a feature or report a bug.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE)
+
