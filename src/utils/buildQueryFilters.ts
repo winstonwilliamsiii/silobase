@@ -11,6 +11,7 @@ export const buildFiltersToRaw = (
   let limitClause = '';
   let offsetClause = '';
   let groupByClause = '';
+  let selectedColumns: string[] = ['*'];
 
   for (const key in query) {
     const value = query[key];
@@ -21,11 +22,15 @@ export const buildFiltersToRaw = (
         const [joinTable, on] = join.split(':on=');
         joinClauses.push(`JOIN "${joinTable}" ON ${on.replace(/=/g, ' = ')}`);
       }
-    } else if (key === 'limit') {
+    } else if (key === 'select') {
+      const fields = (value as string).split(',').map((f) => `"${f.trim()}"`);
+      selectedColumns = fields;
+    } 
+    else if (key === 'limit') {
       limitClause = `LIMIT ${Number(value)}`;
     } else if (key === 'offset') {
       offsetClause = `OFFSET ${Number(value)}`;
-    }  else if (key.startsWith('having.')) {
+    } else if (key.startsWith('having.')) {
       const field = key.replace('having.', '');
       const [op, val] = (value as string).split('.');
       const col = `"${field}"`;
@@ -94,8 +99,13 @@ export const buildFiltersToRaw = (
   const havingClause = having.length ? `HAVING ${having.join(' AND ')}` : '';
   const joinClause = joinClauses.join('\n');
 
+  const selectClause =
+    selectedColumns.includes('*') && query.exclude
+      ? `*`
+      : selectedColumns.join(', ');
+
   const rawSql = `
-    SELECT * FROM "${table}"
+     SELECT ${selectClause} FROM "${table}"
     ${joinClause}
     ${whereClause}
     ${groupByClause}

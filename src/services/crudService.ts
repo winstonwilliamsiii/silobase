@@ -34,9 +34,19 @@ export const readRecords = async (
   try{
     const { rawSql, bindings } = buildFiltersToRaw(table, query)
     const result = await app.db.raw(rawSql, bindings)
-    let dataResult = {
-      count : result.rowCount || result.rows.length,
-      rows: result.rows || result[0],
+
+    let dataResult;
+
+    if (Array.isArray(result)) {
+      dataResult = {
+        count: result.length,
+        rows: result,
+      };
+    } else {
+      dataResult = {
+        count: result.rowCount ?? result.rows?.length ?? 0,
+        rows: result.rows ?? result[0],
+      };
     }
     return {
       status: 'success',
