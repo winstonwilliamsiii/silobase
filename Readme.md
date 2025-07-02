@@ -73,7 +73,7 @@ Full docs are available at the silobase docs website
 | Key Type | Permissions         |
 | -------- | ------------------- |
 | `read`   | GET only            |
-| `write`  | POST, PATCH, DELETE |
+| `write`  | POST, PUT, DELETE |
 | `full`   | All operations      |
 
 
@@ -95,8 +95,8 @@ silobase/
 
 ## 🧪 Roadmap
 
-* [x] PostgreSQL support
-* [ ] MySQL, MSSQL, SQLite
+* [x] PostgreSQL, MSSQL support
+* [ ] MSSQL, SQLite
 * [ ] File storage (S3, Azure Blob)
 * [ ] Email provider support
 * [ ] GraphQL layer (future)
