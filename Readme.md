@@ -28,13 +28,16 @@ npm install
 2. **Set up your `.env`**
 
 ```env
-PORT=3000
-DB_CLIENT=pg
-DATABASE_URL=postgres://username:password@localhost:5432/yourdb
+DB_CLIENT= pg # or mssql
+DB_HOST=
+DB_USER=
+DB_PASSWORD= #5432 of postgress
+DB_PORT=
+DB_NAME=
 
-API_KEY_READ=your-read-key
-API_KEY_WRITE=your-write-key
-API_KEY_FULL=your-full-key
+API_KEY_READ=
+API_KEY_WRITE=
+API_KEY_FULL=
 ```
 
 3. **Run the server**
