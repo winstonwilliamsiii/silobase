@@ -18,6 +18,9 @@ const createDbConfig = (): Knex.Config => {
           password: config.dbPassword,
           port: Number(config.dbPort),
           database: config.dbName,
+          ssl: {
+            rejectUnauthorized: false,
+          },
         },
         pool: commonPool,
       };
