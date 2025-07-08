@@ -15,5 +15,6 @@ export default {
     read: process.env.API_KEY_READ || '',
     write: process.env.API_KEY_WRITE || '',
     full: process.env.API_KEY_FULL || '',
-  }
+  },
+  maskFields: ['password', 'salt', 'secret', 'hash', ...(process.env.MASK_FIELDS?.split(',').map(f => f.trim().toLowerCase()) || [])],
 }

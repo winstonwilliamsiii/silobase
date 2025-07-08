@@ -3,6 +3,7 @@ import cors from '@fastify/cors'
 import db from "./plugins/dbPlugin";
 import crudRoutes from "./routes/crudRoute";
 import auth from "./plugins/authPlugin";
+import maskFields from "./plugins/maskFieldsPlugin";
 
 export default async function createApp() {
   const app = fastify({
@@ -19,6 +20,8 @@ export default async function createApp() {
   app.register(db);
   app.register(auth);
   app.register(crudRoutes, {prefix: "/rest/v1"});
+  app.register(maskFields);
+
 
   // Error handling
   app.setErrorHandler((error, request, reply) => {

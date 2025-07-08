@@ -32,27 +32,27 @@ export const readRecords = async (
   query: Record<string, string>
 ): Promise<GenericResponse<any | null>> => {
   try{
-    const { rawSql, bindings } = buildFiltersToRaw(table, query)
-    const result = await app.db.raw(rawSql, bindings)
+      const { rawSql, bindings } = buildFiltersToRaw(table, query)
+      const result = await app.db.raw(rawSql, bindings)
 
-    let dataResult;
+      let dataResult;
 
-    if (Array.isArray(result)) {
-      dataResult = {
-        count: result.length,
-        rows: result,
-      };
-    } else {
-      dataResult = {
-        count: result.rowCount ?? result.rows?.length ?? 0,
-        rows: result.rows ?? result[0],
-      };
-    }
-    return {
-      status: 'success',
-      data: dataResult,
-      code: 200,
-    }
+      if (Array.isArray(result)) {
+        dataResult = {
+          count: result.length,
+          rows: result,
+        };
+      } else {
+        dataResult = {
+          count: result.rowCount ?? result.rows?.length ?? 0,
+          rows: result.rows ?? result[0],
+        };
+      }
+      return {
+        status: 'success',
+        data: dataResult,
+        code: 200,
+      }
 
   }catch(error: any) {
     app.log.error(error)
