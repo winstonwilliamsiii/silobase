@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { GenericResponse } from '../types/responseType'
 import { buildFiltersToRaw } from '../utils/buildQueryFilters'
-import knex from 'knex'
+import config from '../config/indexConfig'
 
 export const createRecord = async (
   app: FastifyInstance,
@@ -32,7 +32,7 @@ export const readRecords = async (
   query: Record<string, string>
 ): Promise<GenericResponse<any | null>> => {
   try{
-      const { rawSql, bindings } = buildFiltersToRaw(table, query)
+      const { rawSql, bindings } = buildFiltersToRaw(table, query, config.dbClient)
       const result = await app.db.raw(rawSql, bindings)
 
       let dataResult;

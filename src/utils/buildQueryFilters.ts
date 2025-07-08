@@ -2,15 +2,19 @@ type QueryInput = Record<string, string | string[]>;
 
 export const buildFiltersToRaw = (
   table: string,
-  query: QueryInput
+  query: QueryInput,
+  dbClient: string
 ): { rawSql: string; bindings: any[] } => {
   const where: string[] = [];
   const having: string[] = [];
   const bindings: any[] = [];
   const joinClauses: string[] = [];
+
+  let topClause = '';
   let limitClause = '';
   let offsetClause = '';
   let groupByClause = '';
+  let orderByClause = '';
   let selectedColumns: string[] = ['*'];
 
   for (const key in query) {
@@ -23,13 +27,26 @@ export const buildFiltersToRaw = (
         joinClauses.push(`JOIN "${joinTable}" ON ${on.replace(/=/g, ' = ')}`);
       }
     } else if (key === 'select') {
-      const fields = (value as string).split(',').map((f) => `"${f.trim()}"`);
+      const fields = (value as string).split(',').map(f => `"${f.trim()}"`);
       selectedColumns = fields;
-    } 
-    else if (key === 'limit') {
-      limitClause = `LIMIT ${Number(value)}`;
+    } else if (key === 'limit') {
+      const limit = Number(value);
+      if (dbClient === 'pg') {
+        limitClause = `LIMIT ${limit}`;
+      } else if (dbClient === 'mssql') {
+        topClause = `TOP ${limit} `;
+      }
     } else if (key === 'offset') {
-      offsetClause = `OFFSET ${Number(value)}`;
+      const offset = Number(value);
+      if (dbClient === 'pg') {
+        offsetClause = `OFFSET ${offset}`;
+      } else if (dbClient === 'mssql') {
+        offsetClause = `OFFSET ${offset} ROWS`;
+      }
+    } else if (key === 'orderBy') {
+      const orderField = `"${value}"`;
+      const direction = query.order === 'desc' ? 'DESC' : 'ASC';
+      orderByClause = `ORDER BY ${orderField} ${direction}`;
     } else if (key.startsWith('having.')) {
       const field = key.replace('having.', '');
       const [op, val] = (value as string).split('.');
@@ -50,11 +67,8 @@ export const buildFiltersToRaw = (
           bindings.push(...items);
           break;
         }
-        default:
-          break;
       }
     } else {
-      // Regular WHERE clause
       const [op, val] = (value as string).split('.');
       const col = `"${key}"`;
 
@@ -89,10 +103,13 @@ export const buildFiltersToRaw = (
           bindings.push(...items);
           break;
         }
-        default:
-          break;
       }
     }
+  }
+
+  // MSSQL requires ORDER BY if OFFSET is used
+  if (dbClient === 'mssql' && offsetClause && !orderByClause) {
+    orderByClause = `ORDER BY (SELECT NULL)`;
   }
 
   const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
@@ -101,17 +118,18 @@ export const buildFiltersToRaw = (
 
   const selectClause =
     selectedColumns.includes('*') && query.exclude
-      ? `*`
-      : selectedColumns.join(', ');
+      ? `${topClause}*`
+      : `${topClause}${selectedColumns.join(', ')}`;
 
   const rawSql = `
-     SELECT ${selectClause} FROM "${table}"
+    SELECT ${selectClause} FROM "${table}"
     ${joinClause}
     ${whereClause}
     ${groupByClause}
     ${havingClause}
-    ${limitClause}
+    ${orderByClause}
     ${offsetClause}
+    ${dbClient === 'pg' ? limitClause : ''}
   `.trim();
 
   return { rawSql, bindings };
